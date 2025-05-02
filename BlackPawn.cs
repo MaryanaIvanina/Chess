@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class Pawn : MonoBehaviour
+public class BlackPawn : MonoBehaviour
 {
-    private float rotationAmount = 20f;
-    private float moveAmount = 0.5f;
-    private float pawnMoveAmount = 20f;
+    private float rotationAmount = -20f;
+    private float moveAmount = 1f;
+    private float pawnMoveAmount = -10f;
     private bool isRotate = false;
     private int stepCount;
     private Quaternion startRotation;
@@ -48,9 +48,9 @@ public class Pawn : MonoBehaviour
                     Vector3 newPosition = hit.point;
                     float movement = newPosition.z - transform.position.z;
                     float way = newPosition.x - transform.position.x;
-                    if (movement > 5f && movement < (2f * (pawnMoveAmount + 5f)))
+                    if (movement < 5f && movement > 2f * (pawnMoveAmount - 5f))
                     {
-                        if (movement < pawnMoveAmount + 5f)
+                        if (movement > pawnMoveAmount - 5f)
                         {
                             stepCount++;
                             transform.rotation = startRotation;

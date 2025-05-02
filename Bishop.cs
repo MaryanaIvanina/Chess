@@ -1,20 +1,19 @@
+using static System.Math;
 using UnityEngine;
 
-public class Pawn : MonoBehaviour
+public class Bishop : MonoBehaviour
 {
-    private float rotationAmount = 20f;
-    private float moveAmount = 0.5f;
-    private float pawnMoveAmount = 20f;
+    private float rotationAmount = 10f;
+    private float moveAmount = 1f;
     private bool isRotate = false;
-    private int stepCount;
     private Quaternion startRotation;
     private Vector3 startPosition;
     void Start()
     {
         startRotation = transform.rotation;
         startPosition = transform.position;
-        stepCount = 0;
     }
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -48,39 +47,46 @@ public class Pawn : MonoBehaviour
                     Vector3 newPosition = hit.point;
                     float movement = newPosition.z - transform.position.z;
                     float way = newPosition.x - transform.position.x;
-                    if (movement > 5f && movement < (2f * (pawnMoveAmount + 5f)))
+
+                    float bishopMoveUD = ((Abs(movement) / 5f) + 1f) / 2f;
+                    float bishopStepUD = bishopMoveUD - bishopMoveUD % 1f;
+
+                    float bishopMoveLR = ((Abs(way) / 5f) + 1f) / 2f;
+                    float bishopStepLR = bishopMoveLR - bishopMoveLR % 1f;
+
+                    if (bishopStepUD == bishopStepLR)
                     {
-                        if (movement < pawnMoveAmount + 5f)
+                        if (movement > 0 && way > 0)
                         {
-                            stepCount++;
                             transform.rotation = startRotation;
-                            transform.position += new Vector3(0, -moveAmount, pawnMoveAmount);
+                            transform.position += new Vector3(bishopStepLR * 10f, -moveAmount, bishopStepUD * 10f);
                             isRotate = false;
                         }
-                        else
+                        else if (movement > 0 && way < 0)
                         {
-                            if (stepCount == 0)
-                            {
-                                stepCount++;
-                                transform.rotation = startRotation;
-                                transform.position += new Vector3(0, -moveAmount, 2f * pawnMoveAmount);
-                                isRotate = false;
-                            }
-                            else
-                            {
-                                transform.rotation = startRotation;
-                                transform.position -= new Vector3(0, moveAmount, 0);
-                                isRotate = false;
-                            }
+                            transform.rotation = startRotation;
+                            transform.position += new Vector3(-bishopStepLR * 10f, -moveAmount, bishopStepUD * 10f);
+                            isRotate = false;
+                        }
+                        else if (movement < 0 && way > 0)
+                        {
+                            transform.rotation = startRotation;
+                            transform.position += new Vector3(bishopStepLR * 10f, -moveAmount, -bishopStepUD * 10f);
+                            isRotate = false;
+                        }
+                        else if (movement < 0 && way < 0)
+                        {
+                            transform.rotation = startRotation;
+                            transform.position += new Vector3(-bishopStepLR * 10f, -moveAmount, -bishopStepUD * 10f);
+                            isRotate = false;
                         }
                     }
                     else
                     {
                         transform.rotation = startRotation;
                         transform.position -= new Vector3(0, moveAmount, 0);
-                        isRotate = false;
+                        isRotate = false; ;
                     }
-
                 }
             }
         }
